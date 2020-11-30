@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity(), UpdateBudgetFragment.UpdateBudgetListe
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        //startActivity(Intent(this, LogInActivity::class.java).putExtra("password", "1234"))
+        startActivity(Intent(this, LogInActivity::class.java).putExtra("password", "1234"))
 
         current_budget_value = findViewById(R.id.current_budget_value)
         update_budget = findViewById(R.id.update_budget)
