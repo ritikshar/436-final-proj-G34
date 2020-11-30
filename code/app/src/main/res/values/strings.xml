@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Student Expense Tracker System</string>
-    <string name="DONE">DONE</string>
+    <string name="budget">Current Budget:$</string>
+    <string name="update_budget">Update Budget</string>
+    <string name="tot_spend">Total Spending:$</string>
+    <string name="add_ex">Add Expense</string>
+    <string name="show_exs">Show All Expenses</string>
 </resources>
