@@ -84,10 +84,10 @@ class MainActivity : AppCompatActivity(), UpdateBudgetFragment.UpdateBudgetListe
 
     override fun applySpending(category: String?, price: String?) {
         if (category != null && price != null) {
-
             data[category] = price.toFloat()
             total_spent += price.toFloat()
-            total_spending_value.text = total_spent.toString()
+            total_spending_value.text = total_spent.format(2)
+            sharedpreferences.edit().putFloat(TOTAL, total_spent).apply()
             overUnderCalculation()
         }
     }
@@ -106,14 +106,16 @@ class MainActivity : AppCompatActivity(), UpdateBudgetFragment.UpdateBudgetListe
             over_under_text.setTextColor(Color.RED)
 
             val text = "OVER $" + over_under.format(2) + " of the current Budget!"
-            over_under_text.text = text
 
+            over_under_text.text = text
         }
         else { //budget == total_spent
             over_under = 0.toFloat()
             over_under_text.setTextColor(Color.parseColor("#006400"))
             over_under_text.text = "You are at your current Budget!"
         }
+
+        sharedpreferences.edit().putFloat(OVER_UNDER, over_under).apply()
     }
 
     //function to format a float to a typical dollar notation
