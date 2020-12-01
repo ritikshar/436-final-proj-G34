@@ -7,6 +7,7 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 
 
@@ -34,8 +35,14 @@ class UpdateBudgetFragment : DialogFragment() {
                 DialogInterface.OnClickListener { dialogInterface, i -> })
             .setPositiveButton("update",
                 DialogInterface.OnClickListener { dialogInterface, i ->
-                    val budget = updateBudget!!.text.toString()
-                    listener.applyBudget(budget)
+                    val budget = updateBudget!!.text.toString().toFloatOrNull()
+                    if(budget != null) {
+                        listener.applyBudget(budget.toString())
+                    }else{
+                        Toast.makeText(requireActivity(),
+                                "Please enter a valid value",
+                                    Toast.LENGTH_SHORT).show()
+                    }
                 })
 
         return builder.create()

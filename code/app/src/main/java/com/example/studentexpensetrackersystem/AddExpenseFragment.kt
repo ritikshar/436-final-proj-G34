@@ -38,12 +38,14 @@ class AddExpenseFragment: DialogFragment() {
             .setPositiveButton("add",
                 DialogInterface.OnClickListener { dialogInterface, i ->
                     val category = category!!.text.toString()
-                    val price = price!!.text.toString().toIntOrNull()
+                    val price = price!!.text.toString().toFloatOrNull()
                     if(price != null) {
                         listener.applySpending(category, price.toString())
                     }
                     else{
-                        Toast.makeText(requireActivity(),"Enter a valid value", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireActivity(),
+                                "Enter a valid value",
+                                Toast.LENGTH_SHORT).show()
                         Log.i(TAG, "Price has to be a number")
                     }
                 })
