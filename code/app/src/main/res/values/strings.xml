@@ -5,4 +5,5 @@
     <string name="tot_spend">Total Spending:$</string>
     <string name="add_ex">Add Expense</string>
     <string name="show_exs">Show All Expenses</string>
+    <string name="done">Done</string>
 </resources>

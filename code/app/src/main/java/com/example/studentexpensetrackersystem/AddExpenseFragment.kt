@@ -5,8 +5,10 @@ import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.EditText
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 
 class AddExpenseFragment: DialogFragment() {
@@ -19,6 +21,7 @@ class AddExpenseFragment: DialogFragment() {
         fun newInstance(): AddExpenseFragment {
             return AddExpenseFragment()
         }
+        private val TAG = "Expense-Tracker"
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -35,8 +38,14 @@ class AddExpenseFragment: DialogFragment() {
             .setPositiveButton("add",
                 DialogInterface.OnClickListener { dialogInterface, i ->
                     val category = category!!.text.toString()
-                    val price = price!!.text.toString()
-                    listener.applySpending(category, price)
+                    val price = price!!.text.toString().toIntOrNull()
+                    if(price != null) {
+                        listener.applySpending(category, price.toString())
+                    }
+                    else{
+                        Toast.makeText(requireActivity(),"Enter a valid value", Toast.LENGTH_SHORT).show()
+                        Log.i(TAG, "Price has to be a number")
+                    }
                 })
 
         return builder.create()
@@ -57,4 +66,5 @@ class AddExpenseFragment: DialogFragment() {
     interface UpdateSpendingListener {
         fun applySpending(category: String?, price: String?)
     }
+
 }
