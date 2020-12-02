@@ -7,13 +7,18 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.DialogFragment
+import java.io.File
 import java.io.*
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 class MainActivity : AppCompatActivity(), UpdateBudgetFragment.UpdateBudgetListener, AddExpenseFragment.UpdateSpendingListener {
 
@@ -26,6 +31,8 @@ class MainActivity : AppCompatActivity(), UpdateBudgetFragment.UpdateBudgetListe
     private lateinit var updateBudgetDialog: DialogFragment
     private lateinit var addExpenseDialog: DialogFragment
     private lateinit var sharedpreferences: SharedPreferences
+    private lateinit var file: File
+
 
     private var data = mutableMapOf<String, Float>()
 
@@ -38,6 +45,7 @@ class MainActivity : AppCompatActivity(), UpdateBudgetFragment.UpdateBudgetListe
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         sharedpreferences = getSharedPreferences(myPreference, Context.MODE_PRIVATE)
+        file = File(FILE_NAME)
 
         //pull data from internal storage
         budget = sharedpreferences.getFloat(BUDGET, 0.toFloat())
@@ -72,7 +80,7 @@ class MainActivity : AppCompatActivity(), UpdateBudgetFragment.UpdateBudgetListe
     }
 
     fun details_button(v: View) {
-        //should start new activity of all the map data as a List View
+        startActivity(Intent(this, DetailsActivity::class.java).putExtra("key", FILE_NAME))
     }
 
     override fun applyBudget(x: String?) {
@@ -88,8 +96,32 @@ class MainActivity : AppCompatActivity(), UpdateBudgetFragment.UpdateBudgetListe
             total_spent += price.toFloat()
             total_spending_value.text = total_spent.format(2)
             sharedpreferences.edit().putFloat(TOTAL, total_spent).apply()
+
+            val currentDate = LocalDate.now()
+            val formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
+            val formatted = currentDate.format(formatter)
+
+            if(!getFileStreamPath(FILE_NAME).exists()){
+                try{
+                    val text = "$category, ${total_spending_value.text}, $formatted"
+                    write(text)
+                }catch (e: FileNotFoundException){
+                    Log.i("MainActivity", "FileNotFoundException")
+                }
+            }
+
             overUnderCalculation()
         }
+    }
+
+    @Throws(FileNotFoundException::class)
+    private fun write(text: String){
+        val fos = openFileOutput(FILE_NAME, Context.MODE_PRIVATE)
+        val pw = PrintWriter(BufferedWriter(OutputStreamWriter(fos)))
+
+        pw.println(text)
+
+        pw.close()
     }
 
     fun overUnderCalculation() {
