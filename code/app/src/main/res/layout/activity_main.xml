@@ -77,6 +77,17 @@
         app:layout_constraintStart_toStartOf="@id/total_spending"
         />
 
+    <Button
+        android:id="@+id/delete_expense"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:gravity="left"
+        android:text="@string/delete_ex"
+        android:onClick="delete_button"
+        app:layout_constraintTop_toBottomOf="@id/add_expense"
+        app:layout_constraintStart_toStartOf="@id/total_spending"
+        />
+
     <TextView
         android:id="@+id/over_under"
         android:layout_width="wrap_content"
@@ -89,6 +100,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+    <Button
+        android:id="@+id/clear_expenses"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:gravity="left"
+        android:text="@string/clear_exs"
+        android:onClick="clear_button"
+        app:layout_constraintBottom_toTopOf="@id/show_expenses"
+        app:layout_constraintStart_toStartOf="@id/show_expenses"
         />
 
     <Button

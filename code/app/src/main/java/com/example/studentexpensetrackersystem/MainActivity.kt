@@ -79,6 +79,35 @@ class MainActivity : AppCompatActivity(), UpdateBudgetFragment.UpdateBudgetListe
         addExpenseDialog.show(supportFragmentManager, "Add Expense")
     }
 
+    fun delete_button(v: View) {
+        //Should create a new dialog similar to add_expense to delete an entry
+
+        /* CODE to delete a line from a file to be used somewhere later
+        @Throws(IOException::class)
+        fun removeLine(br: BufferedReader, f: File, Line: String) {
+            val temp = File("temp.txt")
+            val bw = BufferedWriter(FileWriter(temp))
+            var currentLine: String
+            while (br.readLine().also { currentLine = it } != null) {
+                val trimmedLine = currentLine.trim { it <= ' ' }
+                if (trimmedLine == Line) {
+                    currentLine = ""
+                }
+            bw.write(currentLine + System.getProperty("line.separator"))
+        }
+        bw.close()
+        br.close()
+        val delete = f.delete()
+        val b = temp.renameTo(f)
+        }
+        */
+    }
+
+    fun clear_button(v: View) {
+        //No creation of a dialog or activity,
+        //simply clear the internal data and show a TOAST when done
+    }
+
     fun details_button(v: View) {
         startActivity(Intent(this, DetailsActivity::class.java).putExtra("key", FILE_NAME))
     }
