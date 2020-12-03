@@ -23,7 +23,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
-class MainActivity : AppCompatActivity(), UpdateBudgetFragment.UpdateBudgetListener, AddExpenseFragment.UpdateSpendingListener {
+class MainActivity : AppCompatActivity(), UpdateBudgetFragment.UpdateBudgetListener, AddExpenseFragment.UpdateSpendingListener, DeleteExpenseFragment.UpdateDeletingListener {
 
     private lateinit var current_budget_value: TextView
     private lateinit var update_budget: Button
@@ -33,11 +33,12 @@ class MainActivity : AppCompatActivity(), UpdateBudgetFragment.UpdateBudgetListe
     private lateinit var details: Button
     private lateinit var updateBudgetDialog: DialogFragment
     private lateinit var addExpenseDialog: DialogFragment
+    private lateinit var deleteExpenseDialog: DialogFragment
     private lateinit var sharedpreferences: SharedPreferences
     private lateinit var file: File
 
 
-    private var data = mutableMapOf<String, Float>()
+    //private var data = mutableMapOf<String, Float>()
 
     private var budget: Float = 0.toFloat()
     private var total_spent: Float = 0.toFloat()
@@ -82,32 +83,27 @@ class MainActivity : AppCompatActivity(), UpdateBudgetFragment.UpdateBudgetListe
     }
 
     fun delete_button(v: View) {
-        //Should create a new dialog similar to add_expense to delete an entry
-
-        /* CODE to delete a line from a file to be used somewhere later
-        @Throws(IOException::class)
-        fun removeLine(br: BufferedReader, f: File, Line: String) {
-            val temp = File("temp.txt")
-            val bw = BufferedWriter(FileWriter(temp))
-            var currentLine: String
-            while (br.readLine().also { currentLine = it } != null) {
-                val trimmedLine = currentLine.trim { it <= ' ' }
-                if (trimmedLine == Line) {
-                    currentLine = ""
-                }
-            bw.write(currentLine + System.getProperty("line.separator"))
-        }
-        bw.close()
-        br.close()
-        val delete = f.delete()
-        val b = temp.renameTo(f)
-        }
-        */
+        deleteExpenseDialog = DeleteExpenseFragment.newInstance()
+        deleteExpenseDialog.show(supportFragmentManager, "Delete Expense")
     }
 
     fun clear_button(v: View) {
-        //No creation of a dialog or activity,
-        //simply clear the internal data and show a TOAST when done
+        if (getFileStreamPath(FILE_NAME).exists()) {
+            total_spending_value.text = (0.toFloat()).format(2)
+            total_spent = 0.toFloat()
+            sharedpreferences.edit().putFloat(TOTAL, 0.toFloat()).apply()
+            //data.clear()
+            getFileStreamPath(FILE_NAME).delete()
+            overUnderCalculation()
+            Toast.makeText(this,
+                "Data Cleared!",
+                Toast.LENGTH_LONG).show()
+        }
+        else {
+            Toast.makeText(this,
+                "File Doesn't Exist!",
+                Toast.LENGTH_LONG).show()
+        }
     }
 
     fun details_button(v: View) {
@@ -126,11 +122,11 @@ class MainActivity : AppCompatActivity(), UpdateBudgetFragment.UpdateBudgetListe
 
     override fun applySpending(category: String?, price: String?) {
         if (category != null && price != null) {
-            data[category] = price.toFloat()
-            total_spent += price.toFloat()
+            //data[category] = price.toFloat()
+            val spent = price.toFloat()
+            total_spent += spent
             total_spending_value.text = total_spent.format(2)
             sharedpreferences.edit().putFloat(TOTAL, total_spent).apply()
-            val spent = price.toFloat()
 
             val currentDate = LocalDate.now()
             val formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
@@ -153,8 +149,23 @@ class MainActivity : AppCompatActivity(), UpdateBudgetFragment.UpdateBudgetListe
                     Log.i("ApplySpending", "Append fail")
                 }
             }
-
             overUnderCalculation()
+        }
+    }
+
+    //NOT DONE
+    override fun applyDeleting(category: String?, price: String?) {
+        if (category != null && price != null) {
+            //if line with this category and price exist {
+            val spent = price.toFloat()
+            total_spent -= spent
+            total_spending_value.text = total_spent.format(2)
+            sharedpreferences.edit().putFloat(TOTAL, total_spent).apply()
+            overUnderCalculation()
+            Toast.makeText(this,
+                "Expense Deleted!",
+                Toast.LENGTH_LONG).show()
+            //} else { }
         }
     }
 
@@ -211,6 +222,7 @@ class MainActivity : AppCompatActivity(), UpdateBudgetFragment.UpdateBudgetListe
         private const val FILE_NAME = "SpendingList.txt"
         private val TAG = "Expense-Tracker"
     }
+
 }
 
 
