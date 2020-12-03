@@ -109,7 +109,10 @@ class MainActivity : AppCompatActivity(), UpdateBudgetFragment.UpdateBudgetListe
     }
 
     fun details_button(v: View) {
-        startActivity(Intent(this, DetailsActivity::class.java).putExtra("key", FILE_NAME))
+        Log.i(TAG, "startActivity for DetailsActivity")
+        val intent = Intent(this, DetailsActivity::class.java)
+        intent.putExtra("key", FILE_NAME)
+        startActivity(intent)
     }
 
     override fun applyBudget(x: String?) {
@@ -190,6 +193,7 @@ class MainActivity : AppCompatActivity(), UpdateBudgetFragment.UpdateBudgetListe
         private const val OVER_UNDER = "over"
         private const val TOTAL = "total_spent"
         private const val FILE_NAME = "SpendingList.txt"
+        private val TAG = "Expense-Tracker"
     }
 }
 
