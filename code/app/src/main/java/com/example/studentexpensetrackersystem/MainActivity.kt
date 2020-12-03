@@ -16,6 +16,9 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.DialogFragment
 import java.io.File
 import java.io.*
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.nio.file.StandardOpenOption
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -45,7 +48,6 @@ class MainActivity : AppCompatActivity(), UpdateBudgetFragment.UpdateBudgetListe
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         sharedpreferences = getSharedPreferences(myPreference, Context.MODE_PRIVATE)
-        file = File(FILE_NAME)
 
         //pull data from internal storage
         budget = sharedpreferences.getFloat(BUDGET, 0.toFloat())
@@ -128,17 +130,27 @@ class MainActivity : AppCompatActivity(), UpdateBudgetFragment.UpdateBudgetListe
             total_spent += price.toFloat()
             total_spending_value.text = total_spent.format(2)
             sharedpreferences.edit().putFloat(TOTAL, total_spent).apply()
+            val spent = price.toFloat()
 
             val currentDate = LocalDate.now()
             val formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
             val formatted = currentDate.format(formatter)
 
+            val text = "$category, -${spent.format(2)}, $formatted"
+
             if(!getFileStreamPath(FILE_NAME).exists()){
                 try{
-                    val text = "$category, ${total_spending_value.text}, $formatted"
                     write(text)
                 }catch (e: FileNotFoundException){
                     Log.i("MainActivity", "FileNotFoundException")
+                }
+            }else{
+                try {
+                    val newText = text+"\n"
+                    getFileStreamPath(FILE_NAME).appendText(newText)
+                    Log.i("ApplySpending" ,"Append success")
+                } catch (e: IOException) {
+                    Log.i("ApplySpending", "Append fail")
                 }
             }
 
@@ -148,12 +160,16 @@ class MainActivity : AppCompatActivity(), UpdateBudgetFragment.UpdateBudgetListe
 
     @Throws(FileNotFoundException::class)
     private fun write(text: String){
+
         val fos = openFileOutput(FILE_NAME, Context.MODE_PRIVATE)
         val pw = PrintWriter(BufferedWriter(OutputStreamWriter(fos)))
 
         pw.println(text)
 
         pw.close()
+
+
+        Log.i("Write", "File creation success")
     }
 
     fun overUnderCalculation() {
