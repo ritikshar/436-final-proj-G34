@@ -22,6 +22,7 @@ import java.nio.file.StandardOpenOption
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
+import java.util.ArrayList
 
 class MainActivity : AppCompatActivity(), UpdateBudgetFragment.UpdateBudgetListener, AddExpenseFragment.UpdateSpendingListener, DeleteExpenseFragment.UpdateDeletingListener {
 
@@ -136,7 +137,7 @@ class MainActivity : AppCompatActivity(), UpdateBudgetFragment.UpdateBudgetListe
 
             if(!getFileStreamPath(FILE_NAME).exists()){
                 try{
-                    write(text)
+                    write(FILE_NAME, text)
                 }catch (e: FileNotFoundException){
                     Log.i("MainActivity", "FileNotFoundException")
                 }
@@ -153,26 +154,82 @@ class MainActivity : AppCompatActivity(), UpdateBudgetFragment.UpdateBudgetListe
         }
     }
 
-    //NOT DONE
     override fun applyDeleting(category: String?, price: String?) {
         if (category != null && price != null) {
-            //if line with this category and price exist {
-            val spent = price.toFloat()
-            total_spent -= spent
-            total_spending_value.text = total_spent.format(2)
-            sharedpreferences.edit().putFloat(TOTAL, total_spent).apply()
-            overUnderCalculation()
-            Toast.makeText(this,
-                "Expense Deleted!",
-                Toast.LENGTH_LONG).show()
-            //} else { }
+            var flag = 0
+            val refinedPrice = price.toFloat().format(2)
+            val fis = openFileInput(FILE_NAME)
+            val lines = BufferedReader(InputStreamReader(fis)).readLines() as ArrayList<String>
+
+            var currLine : String
+
+            for(line in lines) {
+                val x = line.split(Regex(", "), 3)
+                if (x[0] == category && x[1] == "-".plus(refinedPrice)) { //found line to delete
+                    flag = 1
+                    val spent = price.toFloat()
+                    total_spent -= spent
+                    total_spending_value.text = total_spent.format(2)
+                    sharedpreferences.edit().putFloat(TOTAL, total_spent).apply()
+                    overUnderCalculation()
+
+                    //don't add this line to new file
+                    currLine = ""
+                    val newText = currLine+"\n"
+                    if(!getFileStreamPath(TEMP_FILE_NAME).exists()){
+                        try{
+                            write(TEMP_FILE_NAME, newText)
+                        }catch (e: FileNotFoundException){
+                            Log.i("MainActivity", "FileNotFoundException")
+                        }
+                    }else{
+                        try {
+                            getFileStreamPath(TEMP_FILE_NAME).appendText(newText)
+                        } catch (e: IOException) {
+                            Log.i("ApplyDeleting", "Append fail")
+                        }
+                    }
+                }
+                //add every other line to new file
+                currLine = line
+                val newText = currLine+"\n"
+                if(!getFileStreamPath(TEMP_FILE_NAME).exists()){
+                    try{
+                        write(TEMP_FILE_NAME, newText)
+                    }catch (e: FileNotFoundException){
+                        Log.i("MainActivity", "FileNotFoundException")
+                    }
+                }else{
+                    try {
+                        getFileStreamPath(TEMP_FILE_NAME).appendText(newText)
+                    } catch (e: IOException) {
+                        Log.i("ApplyDeleting", "Append fail")
+                    }
+                }
+
+            }
+            //overwrite contents of new file into old file and delete new file
+            getFileStreamPath(TEMP_FILE_NAME).copyTo(getFileStreamPath(FILE_NAME), true)
+            getFileStreamPath(TEMP_FILE_NAME).delete()
+
+
+            if (flag == 0) {
+                Toast.makeText(this,
+                    "Expense Not Found!",
+                    Toast.LENGTH_LONG).show()
+            }
+            else if (flag == 1) {
+                Toast.makeText(this,
+                    "Expense Deleted!",
+                    Toast.LENGTH_LONG).show()
+            }
         }
     }
 
     @Throws(FileNotFoundException::class)
-    private fun write(text: String){
+    private fun write(fileName: String, text: String){
 
-        val fos = openFileOutput(FILE_NAME, Context.MODE_PRIVATE)
+        val fos = openFileOutput(fileName, Context.MODE_PRIVATE)
         val pw = PrintWriter(BufferedWriter(OutputStreamWriter(fos)))
 
         pw.println(text)
@@ -220,6 +277,7 @@ class MainActivity : AppCompatActivity(), UpdateBudgetFragment.UpdateBudgetListe
         private const val OVER_UNDER = "over"
         private const val TOTAL = "total_spent"
         private const val FILE_NAME = "SpendingList.txt"
+        private const val TEMP_FILE_NAME = "temp.txt"
         private val TAG = "Expense-Tracker"
     }
 
