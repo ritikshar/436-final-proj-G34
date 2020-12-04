@@ -2,6 +2,7 @@ package com.example.studentexpensetrackersystem
 
 import android.app.Activity
 import android.content.Context
+import android.graphics.Typeface
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -35,8 +36,11 @@ class SpendingAdapter(context: Context, spendingArr: ArrayList<String>): BaseAda
     if(convertView == null) {
         listItemView = LayoutInflater.from(mContext).inflate(R.layout.list_details, parent, false)
         viewHolder.expenseView = listItemView.findViewById<View>(R.id.expense_name) as TextView
+        viewHolder.expenseView.setTypeface(null, Typeface.BOLD)
         viewHolder.priceView = listItemView.findViewById<View>(R.id.price) as TextView
+        viewHolder.priceView.setTypeface(null, Typeface.BOLD)
         viewHolder.dateView = listItemView.findViewById<View>(R.id.date) as TextView
+        viewHolder.dateView.setTypeface(null, Typeface.BOLD)
         listItemView.tag = viewHolder
 
     }

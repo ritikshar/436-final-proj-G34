@@ -7,13 +7,14 @@ import android.view.View
 import android.widget.Button
 import android.widget.ListView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import java.io.BufferedReader
 import java.io.File
 import java.io.IOException
 import java.io.InputStreamReader
 import java.util.ArrayList
 
-class DetailsActivity : Activity() {
+class DetailsActivity : AppCompatActivity() {
 
     private lateinit var close: Button
     private lateinit var listView: ListView
@@ -62,6 +63,7 @@ class DetailsActivity : Activity() {
             Log.i(TAG, "Printing element: $ele")
         }
         listView.adapter = SpendingAdapter(this, lst)
+        fis.close()
     }
     companion object {
         private val TAG = "Expense-Tracker"
