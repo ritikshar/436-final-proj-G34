@@ -8,24 +8,28 @@
     android:orientation="horizontal"
     android:minHeight="?android:attr/listPreferredItemHeight"
     android:padding="16dp"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="@color/red">
 
     <TextView
         android:id="@+id/expense_name"
         android:layout_width="0dp"
         android:layout_weight="1"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"/>
 
     <TextView
         android:id="@+id/price"
         android:layout_width="0dp"
         android:layout_weight=".5"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"/>
 
     <TextView
         android:id="@+id/date"
         android:layout_width="0dp"
         android:layout_weight=".5"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"/>
 
 </LinearLayout>

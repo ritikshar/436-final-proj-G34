@@ -3,14 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/cardview_dark_background"
+    android:background="@color/black"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
         android:id="@+id/pinText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/design_default_color_background"
+        android:textColor="@color/yellow"
+        android:textSize="30dp"
         android:gravity="center_horizontal"
         tools:layout_editor_absoluteX="-28dp"
         tools:layout_editor_absoluteY="120dp"
@@ -23,6 +24,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="148dp"
+
+        app:pinBackground="@color/red"
         app:cursorVisible="false"
 
         app:hint=""
