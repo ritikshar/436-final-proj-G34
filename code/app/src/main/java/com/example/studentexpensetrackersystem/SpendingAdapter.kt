@@ -53,6 +53,7 @@ class SpendingAdapter(context: Context, spendingArr: ArrayList<String>): BaseAda
         val currentItem = getItem(position) as String
         val list = currentItem.split(Regex(", "), 3)
         mholder.expenseView.text = list[0]
+         //Log.i(TAG, "Error appears here: " + list[0])
         mholder.priceView.text = list[1]
         mholder.dateView.text = list[2]
         
@@ -70,6 +71,13 @@ class SpendingAdapter(context: Context, spendingArr: ArrayList<String>): BaseAda
     override fun getCount(): Int {
         return spendingArr.size
     }
+
+
+    fun notifyChange(): Boolean {
+        notifyDataSetChanged()
+        return true
+    }
+
     internal class ViewHolder {
         lateinit var expenseView: TextView
         lateinit var priceView: TextView
