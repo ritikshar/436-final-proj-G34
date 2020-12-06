@@ -8,10 +8,14 @@ import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.DialogFragment
 import java.io.File
@@ -56,7 +60,11 @@ class MainActivity : AppCompatActivity(), UpdateBudgetFragment.UpdateBudgetListe
         over_under = sharedpreferences.getFloat(OVER_UNDER, 0.toFloat())
         total_spent = sharedpreferences.getFloat(TOTAL, 0.toFloat())
 
-        startActivity(Intent(this, LogInActivity::class.java).putExtra("password", "1234"))
+        val logIn = sharedpreferences.getBoolean(LOGIN, false)
+        if(logIn) {
+            startActivity(Intent(this, LogInActivity::class.java)
+                .putExtra("password", sharedpreferences.getString("password", null)))
+        }
 
         //assignments
         current_budget_value = findViewById(R.id.current_budget_value)
@@ -71,6 +79,32 @@ class MainActivity : AppCompatActivity(), UpdateBudgetFragment.UpdateBudgetListe
         over_under_text.text = over_under.format(2)
         total_spending_value.text = total_spent.format(2)
         overUnderCalculation()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean{
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle item selection
+        return when (item.itemId) {
+            R.id.info -> {
+                val dialogBuilder = AlertDialog.Builder(this)
+                dialogBuilder.setMessage("This application is written by:\n" +
+                        "Aavash Thapa \nRitik Sharma \nAustin Han").setCancelable(true)
+                val alert = dialogBuilder.create()
+                alert.setTitle("Student Expense Tracker")
+                alert.show()
+                true
+            }
+            R.id.setting -> {
+                startActivity(Intent(this, PinSettingActivity::class.java))
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     fun update_button(v: View) {
@@ -278,6 +312,7 @@ class MainActivity : AppCompatActivity(), UpdateBudgetFragment.UpdateBudgetListe
         private const val TOTAL = "total_spent"
         private const val FILE_NAME = "SpendingList.txt"
         private const val TEMP_FILE_NAME = "temp.txt"
+        private const val LOGIN = "userLoginPreference"
         private val TAG = "Expense-Tracker"
     }
 
