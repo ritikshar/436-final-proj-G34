@@ -24,7 +24,7 @@ class PinSettingActivity : AppCompatActivity(){
         text = findViewById(R.id.pinText)
         text.text = "Enter your desired pin"
         val view = findViewById<Pinview>(R.id.pinview)
-//        if(!sharedPref.getBoolean(LOGIN, false)) {
+        if(!sharedPref.getBoolean(LOGIN, false)) {
             view.setPinViewEventListener { pin, _ ->
                 if (pinString != "") {
                     if (pinString == pin.value) {
@@ -43,14 +43,18 @@ class PinSettingActivity : AppCompatActivity(){
                     text.text = "Reenter your desired pin"
                 }
             }
-//        }else{
-//            text.text = "Enter your current pin"
-//            view.setPinViewEventListener { pin, _ ->
-//                if (pin.value == sharedPref.getString("password", null).toString()) {
-//
-//                }
-//            }
-//        }
+        }else{
+            text.text = "Enter your current pin"
+            view.setPinViewEventListener { pin, _ ->
+                if (pin.value == sharedPref.getString("password", null).toString()) {
+                    val manager = RemovePinFragment()
+                    manager.show(supportFragmentManager, "remove")
+                }else{
+                    text.text = "Wrong pin entered"
+                    pin.clearValue()
+                }
+            }
+        }
     }
 
     private fun pinCheck(){
