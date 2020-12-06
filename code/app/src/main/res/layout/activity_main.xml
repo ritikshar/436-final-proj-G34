@@ -104,20 +104,21 @@
 
     <Button
         android:id="@+id/clear_expenses"
-        android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:gravity="left"
-        android:text="@string/clear_exs"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginBottom="4dp"
+        android:gravity="center_horizontal"
         android:onClick="clear_button"
+        android:text="@string/clear_exs"
         app:layout_constraintBottom_toTopOf="@id/show_expenses"
-        app:layout_constraintStart_toStartOf="@id/show_expenses"
-        />
+        app:layout_constraintStart_toStartOf="@id/show_expenses" />
 
     <Button
         android:id="@+id/show_expenses"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:gravity="left"
+        android:gravity="center_horizontal"
         android:text="@string/show_exs"
         android:onClick="details_button"
         app:layout_constraintBottom_toBottomOf="parent"
