@@ -8,4 +8,6 @@
     <string name="clear_exs">Clear Expenses</string>
     <string name="show_exs">Show All Expenses</string>
     <string name="done">Done</string>
+    <string name="remove">Remove</string>
+    <string name="cancel">Cancel</string>
 </resources>
