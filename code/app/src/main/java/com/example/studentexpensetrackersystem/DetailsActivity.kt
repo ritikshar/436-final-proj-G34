@@ -56,8 +56,6 @@ class DetailsActivity : AppCompatActivity() {
         }
         listView.adapter = SpendingAdapter(this, lst)
         if(isDelete){
-            //listView.onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                // TODO Auto-generated method stub
             listView.onItemLongClickListener =
                 AdapterView.OnItemLongClickListener { parent, view, position, id ->
 
