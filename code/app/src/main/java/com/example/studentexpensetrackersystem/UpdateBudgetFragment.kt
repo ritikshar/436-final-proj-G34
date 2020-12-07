@@ -10,7 +10,10 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 
-
+/*
+UpdateBudgetFragment: This fragment is called from main activity
+                    and is used to update/add the budget.
+*/
 class UpdateBudgetFragment : DialogFragment() {
 
     private lateinit var updateBudget: EditText
@@ -23,6 +26,11 @@ class UpdateBudgetFragment : DialogFragment() {
         }
     }
 
+    /*
+   Displays the fragment with input field where user
+   can add or update the budget. Calls applySpending
+   in MainActivity to update.
+   */
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(activity)
         val inflater = activity!!.layoutInflater

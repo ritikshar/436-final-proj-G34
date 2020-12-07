@@ -12,6 +12,13 @@ import java.io.*
 import java.util.ArrayList
 import kotlin.math.abs
 
+/*
+DetailsActivity: This is the activity to display the listView for both the details
+                and the delete expense button. For the details button, it is just
+                supposed to display the list while for the delete, it deletes
+                items from the list. It uses a custom adapter called SpendingAdapter.
+ */
+
 class DetailsActivity : AppCompatActivity() {
 
     private lateinit var close: Button
@@ -44,6 +51,13 @@ class DetailsActivity : AppCompatActivity() {
         }
     }
 
+    /*
+    @file: Name of the text file
+    @isDelete: Boolean indicating if the list view is for delete or details
+    Function is used read from the text file that was created to store the
+    expenses. It will create and instance of adapter to display the items
+    and if isDelete is true, it also starts the delete on longClick.
+     */
     private fun readFile(file: String, isDelete: Boolean){
         val lst = getFileStreamPath(file).readLines() as ArrayList<String>
 
@@ -70,6 +84,14 @@ class DetailsActivity : AppCompatActivity() {
         (listView.adapter as SpendingAdapter).notifyDataSetChanged()
     }
 
+    /*
+    @category: The category of the expense to delete
+    @price: The price of the expense to delete
+    The function is called from the previous readFile function
+    if an item needs to be deleted. The item needs to be found
+    in the text file and removed while also updating the total
+    expense along with the over/under calculation.
+     */
     fun applyDeleting(category: String?, price: String?) {
         if (category != null && price != null) {
             var flag = 0

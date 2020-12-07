@@ -11,6 +11,13 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 
+/*
+AddExpenseFragment: This fragment is called from main activity
+                    and is used to add new expenses and store them
+                    in the a textfile using applySpending in the
+                    MainActivity
+*/
+
 class AddExpenseFragment: DialogFragment() {
     private lateinit var category: EditText
     private lateinit var price: EditText
@@ -24,6 +31,12 @@ class AddExpenseFragment: DialogFragment() {
         private val TAG = "Expense-Tracker"
     }
 
+   /*
+    Displays the fragment with two input fields:
+    category of the expense and the price which is basically
+    the cost associated with that expense. Calls applySpending
+    in MainActivity to update the textfile.
+    */
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(activity)
         val inflater = activity!!.layoutInflater

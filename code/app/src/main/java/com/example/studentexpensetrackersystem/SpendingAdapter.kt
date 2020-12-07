@@ -12,19 +12,20 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import java.util.*
 
-
-
-
+/*
+SpendingAdapter: Custom adapter that holds categories, price and date
+                for each item in the ArrayList which was created from
+                the text file of expense.
+ */
 class SpendingAdapter(context: Context, spendingArr: ArrayList<String>): BaseAdapter(){
 
     var mContext = context
     var spendingArr = spendingArr
 
-     override fun getView(
-        position: Int,
-        convertView: View?,
-        parent: ViewGroup
-    ): View {
+    /*
+    GetView() method that uses viewHolder to hold all of the text views.
+     */
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
 
         // Check if the existing view is being reused, otherwise inflate the view
          Log.i(TAG, "getView()")
@@ -47,33 +48,34 @@ class SpendingAdapter(context: Context, spendingArr: ArrayList<String>): BaseAda
     else{
         listItemView = convertView
     }
-        // Return the whole list item layout (containing 2 TextViews and an ImageView)
-        // so that it can be shown in the ListView
+
         val mholder = listItemView.tag as ViewHolder
         val currentItem = getItem(position) as String
         val list = currentItem.toString().split(Regex(", "), 3)
          if (list.size != 1) {
              mholder.expenseView.text = list[0]
-             // Log.i(TAG, "THIS" + list[0]+"this")
              mholder.priceView.text = list[1]
              mholder.dateView.text = list[2]
          }
         return listItemView
     }
 
+    //Return the item in at position
     override fun getItem(position: Int): Any {
         return spendingArr[position]
     }
 
+    //Returns the id of position
     override fun getItemId(position: Int): Long {
         return position.toLong()
     }
 
+    //Returns the lenght of the list
     override fun getCount(): Int {
         return spendingArr.size
     }
 
-
+    //Notifies the adapter of the changes
     fun notifyChange(): Boolean {
         notifyDataSetChanged()
         return true

@@ -28,6 +28,25 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.ArrayList
 
+/*
+Project: Student Expense Tracker System
+Group: 34
+Contributors: Austin Han, Ritik Sharma and Aavash Thapa
+About: The app helps users keep track of their expense
+        and make sure they are staying within their budget.
+Note: "https://developer.android.com/" along with example
+        code posted by Professor Adam Porter were
+        used as references throughout the whole project.
+        Additionally, "https://github.com/GoodieBag/Pinview"
+        was used to secure the app for the user with pins.
+*/
+/*
+MainActivity: As stated in the name, this is the main page where
+              most of the functionality is located. The user can
+              view and update the budget, view, add and delete expenses,
+              and make sure that they are staying within the budget. They
+              can also find out about the app and set/update their pin.
+ */
 class MainActivity : AppCompatActivity(), UpdateBudgetFragment.UpdateBudgetListener, AddExpenseFragment.UpdateSpendingListener {
 
     private lateinit var current_budget_value: TextView
@@ -69,12 +88,17 @@ class MainActivity : AppCompatActivity(), UpdateBudgetFragment.UpdateBudgetListe
         overUnderCalculation()
     }
 
+/*
+    Option on the right of the title bar with options to
+    get info or set the pin
+    */
     override fun onCreateOptionsMenu(menu: Menu): Boolean{
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.menu, menu)
         return true
     }
 
+    //Select between the two options
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle item selection
         return when (item.itemId) {
@@ -95,16 +119,19 @@ class MainActivity : AppCompatActivity(), UpdateBudgetFragment.UpdateBudgetListe
         }
     }
 
+    //On the update button press, this leads to the update budget button fragment
     fun update_button(v: View) {
         updateBudgetDialog = UpdateBudgetFragment.newInstance()
         updateBudgetDialog.show(supportFragmentManager, "Budget")
     }
 
+    //On the add button press, this leads to the add expense button fragment
     fun add_button(v: View) {
         addExpenseDialog = AddExpenseFragment.newInstance()
         addExpenseDialog.show(supportFragmentManager, "Add Expense")
     }
 
+    //On the delete button press, this leads to the delete expense activity
     fun delete_button(v: View) {
         Log.i(TAG, "Delete() for DetailsActivity")
         val intent = Intent(this, DetailsActivity::class.java)
@@ -113,6 +140,7 @@ class MainActivity : AppCompatActivity(), UpdateBudgetFragment.UpdateBudgetListe
         startActivity(intent)
     }
 
+    //On the add button press, this clears the expenses
     fun clear_button(v: View) {
         if (getFileStreamPath(FILE_NAME).exists()) {
             total_spending_value.text = (0.toFloat()).format(2)
@@ -131,6 +159,10 @@ class MainActivity : AppCompatActivity(), UpdateBudgetFragment.UpdateBudgetListe
         }
     }
 
+/*
+    On the details button press, this displays the listview activity
+    with expense details
+    */
     fun details_button(v: View) {
         Log.i(TAG, "startActivity for DetailsActivity")
         val intent = Intent(this, DetailsActivity::class.java)
@@ -139,6 +171,7 @@ class MainActivity : AppCompatActivity(), UpdateBudgetFragment.UpdateBudgetListe
         startActivity(intent)
     }
 
+    //Helper function for the update budget fragment
     override fun applyBudget(x: String?) {
         budget = x!!.toFloat()
         current_budget_value.text = budget.format(2)
@@ -146,6 +179,12 @@ class MainActivity : AppCompatActivity(), UpdateBudgetFragment.UpdateBudgetListe
         overUnderCalculation()
     }
 
+/*
+    Helper function for adding the expense fragment.
+    This function organized the input and calls write to
+    store into textFile
+    Creates a new textfile if one doesn't already exist
+    */
     override fun applySpending(category: String?, price: String?) {
         if (category != null && price != null) {
             val spent = price.toFloat()
@@ -178,6 +217,7 @@ class MainActivity : AppCompatActivity(), UpdateBudgetFragment.UpdateBudgetListe
         }
     }
 
+    //The function called by applySpending to write to file.
     @Throws(FileNotFoundException::class)
     private fun write(fileName: String, text: String){
 
@@ -192,6 +232,11 @@ class MainActivity : AppCompatActivity(), UpdateBudgetFragment.UpdateBudgetListe
         Log.i("Write", "File creation success")
     }
 
+/*
+    Based on the budget and the expenses the over under is calculated to
+    let the user know how much over or under the budget they are.
+    Called when budget or expenses are update.
+    */
     fun overUnderCalculation() {
         if (budget > total_spent) {
             over_under = budget - total_spent

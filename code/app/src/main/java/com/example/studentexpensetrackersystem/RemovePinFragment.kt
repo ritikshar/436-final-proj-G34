@@ -8,6 +8,12 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 
+/*
+RemovePinFragment: Fragment pops up in pin setting to
+                    see if you want to remove the pin
+                    that was created. The user has the
+                    choice either to remove or cancel.
+ */
 class RemovePinFragment : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

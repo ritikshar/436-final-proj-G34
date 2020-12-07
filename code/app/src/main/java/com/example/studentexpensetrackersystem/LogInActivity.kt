@@ -9,6 +9,12 @@ import androidx.appcompat.app.AppCompatActivity
 import com.goodiebag.pinview.Pinview
 import kotlinx.android.synthetic.main.activity_login.*
 
+
+/*
+LogInActivity: This is the first activity the user sees if they have a pin created.
+                They have to enter a pin to access the application.
+ */
+
 class LogInActivity : AppCompatActivity(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,6 +23,7 @@ class LogInActivity : AppCompatActivity(){
         pinCheck()
     }
 
+    //Funtion that checks if the pin entered is correct.
     private fun pinCheck(){
         val userPin = intent.getStringExtra(key)
         val view = findViewById<Pinview>(R.id.pinview)
