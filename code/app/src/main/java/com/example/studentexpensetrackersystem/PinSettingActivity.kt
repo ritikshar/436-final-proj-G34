@@ -68,19 +68,6 @@ class PinSettingActivity : AppCompatActivity(){
         }
     }
 
-    private fun pinCheck(){
-        text.text = "Reenter your desired pin"
-        val view = findViewById<Pinview>(R.id.pinview)
-        view.setPinViewEventListener { pin, _ ->
-            if (pin.value != pinString) {
-                text.text = "Incorrect Pin Entered"
-                pin.clearValue()
-            }else{
-                finish()
-            }
-        }
-    }
-
     companion object{
         private const val myPreference = "mypref"
         private const val LOGIN = "userLoginPreference"
