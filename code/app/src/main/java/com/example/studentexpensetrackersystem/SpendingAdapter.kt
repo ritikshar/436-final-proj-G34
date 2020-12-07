@@ -51,12 +51,13 @@ class SpendingAdapter(context: Context, spendingArr: ArrayList<String>): BaseAda
         // so that it can be shown in the ListView
         val mholder = listItemView.tag as ViewHolder
         val currentItem = getItem(position) as String
-        val list = currentItem.split(Regex(", "), 3)
-        mholder.expenseView.text = list[0]
-         //Log.i(TAG, "Error appears here: " + list[0])
-        mholder.priceView.text = list[1]
-        mholder.dateView.text = list[2]
-        
+        val list = currentItem.toString().split(Regex(", "), 3)
+         if (list.size != 1) {
+             mholder.expenseView.text = list[0]
+             // Log.i(TAG, "THIS" + list[0]+"this")
+             mholder.priceView.text = list[1]
+             mholder.dateView.text = list[2]
+         }
         return listItemView
     }
 

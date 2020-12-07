@@ -2,6 +2,7 @@ package com.example.studentexpensetrackersystem
 
 import android.app.Activity
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -44,10 +45,7 @@ class DetailsActivity : AppCompatActivity() {
     }
 
     private fun readFile(file: String, isDelete: Boolean){
-        //val fis = openFileInput(file)
-        //val br = BufferedReader(InputStreamReader(fis))
-        //val lst = BufferedReader(InputStreamReader(fis)).readLines() as ArrayList<String>
-        val lst = getFileStreamPath(MainActivity.FILE_NAME).readLines() as ArrayList<String>
+        val lst = getFileStreamPath(file).readLines() as ArrayList<String>
 
         Log.i(TAG, "DetailsActivity.readFile()")
 
@@ -66,7 +64,8 @@ class DetailsActivity : AppCompatActivity() {
                     val lineToRemove = lst[position]
                     lst.remove(lineToRemove)
                     val currLineLst = lineToRemove.split(Regex(", "), 3)
-                    applyDeleting(currLineLst[0], currLineLst[1])
+                    if (currLineLst.size != 1)
+                        applyDeleting(currLineLst[0], currLineLst[1])
                     (listView.adapter as SpendingAdapter).notifyChange()
                 }
         }
@@ -76,9 +75,7 @@ class DetailsActivity : AppCompatActivity() {
     fun applyDeleting(category: String?, price: String?) {
         if (category != null && price != null) {
             var flag = 0
-            val refinedPrice = price.toFloat().format(2)
             var lines = getFileStreamPath(MainActivity.FILE_NAME).readLines()
-            var currLine : String
             var count = 0;
             Log.i(TAG, "CATEGORY: $category PRICE: $price")
             for(line in lines) {
@@ -89,15 +86,35 @@ class DetailsActivity : AppCompatActivity() {
                 if (x[0] == category && x[1] == price) { //found line to delete
                     Log.i(TAG, "Inside the IF STATEMENT")
                     flag = 1
-                    val spent = price.toFloat()
-                    //TODO: Have to set the total spending properly here
-//                    Log.i(TAG, "TOTAL SPENT: " + MainActivity.total_spent)
-//                    Log.i(TAG, "SPENT PRICE: $spent")
-//                    MainActivity.total_spent -= spent
+                    val spent = -price.toFloat()
+                    MainActivity.total_spent -= spent
                     MainActivity.total_spending_value.text = MainActivity.total_spent.format(2)
                     MainActivity.sharedpreferences.edit().putFloat(MainActivity.TOTAL, MainActivity.total_spent).apply()
-                    //TODO: Have to do the over under calculation here
-                    //MainActivity.overUnderCalculation()
+                    //over under calculation here
+                        if (MainActivity.budget > MainActivity.total_spent) {
+                            MainActivity.over_under = MainActivity.budget - MainActivity.total_spent
+                            MainActivity.over_under_text.setTextColor(Color.parseColor("#006400"))
+
+                            val text = "UNDER $" + MainActivity.over_under.format(2) + " of the current Budget!"
+
+                            MainActivity.over_under_text.text = text
+                        }
+                        else if (MainActivity.budget < MainActivity.total_spent) {
+                            MainActivity.over_under = MainActivity.total_spent - MainActivity.budget
+                            MainActivity.over_under_text.setTextColor(Color.RED)
+
+                            val text = "OVER $" +  MainActivity.over_under.format(2) + " of the current Budget!"
+
+                            MainActivity.over_under_text.text = text
+                        }
+                        else { //budget == total_spent
+                            MainActivity.over_under = 0.toFloat()
+                            MainActivity.over_under_text.setTextColor(Color.parseColor("#006400"))
+                            MainActivity.over_under_text.text = "You are at your current Budget!"
+                        }
+
+                        MainActivity.sharedpreferences.edit().putFloat(MainActivity.OVER_UNDER, MainActivity.over_under).apply()
+
                     lines = lines.take(count) + lines.drop(count+n)
                     val text = lines.joinToString(System.lineSeparator())
 
@@ -122,18 +139,6 @@ class DetailsActivity : AppCompatActivity() {
     }
     fun Float.format(digits: Int): String {
         return "%.${digits}f".format(this)
-    }
-    private fun write(fileName: String, text: String){
-
-        val fos = openFileOutput(fileName, Context.MODE_PRIVATE)
-        val pw = PrintWriter(BufferedWriter(OutputStreamWriter(fos)))
-
-        pw.println(text)
-
-        pw.close()
-
-
-        Log.i("Write", "File creation success")
     }
 
     companion object {

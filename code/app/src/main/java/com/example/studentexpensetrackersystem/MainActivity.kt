@@ -28,26 +28,14 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.ArrayList
 
-class MainActivity : AppCompatActivity(), UpdateBudgetFragment.UpdateBudgetListener, AddExpenseFragment.UpdateSpendingListener, DeleteExpenseFragment.UpdateDeletingListener {
+class MainActivity : AppCompatActivity(), UpdateBudgetFragment.UpdateBudgetListener, AddExpenseFragment.UpdateSpendingListener {
 
     private lateinit var current_budget_value: TextView
     private lateinit var update_budget: Button
-
     private lateinit var add_expense: Button
-    private lateinit var over_under_text: TextView
     private lateinit var details: Button
     private lateinit var updateBudgetDialog: DialogFragment
     private lateinit var addExpenseDialog: DialogFragment
-    private lateinit var deleteExpenseDialog: DialogFragment
-
-    private lateinit var file: File
-
-
-    //private var data = mutableMapOf<String, Float>()
-
-    private var budget: Float = 0.toFloat()
-
-    private var over_under: Float = 0.toFloat()
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -118,8 +106,6 @@ class MainActivity : AppCompatActivity(), UpdateBudgetFragment.UpdateBudgetListe
     }
 
     fun delete_button(v: View) {
-//        deleteExpenseDialog = DeleteExpenseFragment.newInstance()
-//        deleteExpenseDialog.show(supportFragmentManager, "Delete Expense")
         Log.i(TAG, "Delete() for DetailsActivity")
         val intent = Intent(this, DetailsActivity::class.java)
         intent.putExtra("key", FILE_NAME)
@@ -132,7 +118,6 @@ class MainActivity : AppCompatActivity(), UpdateBudgetFragment.UpdateBudgetListe
             total_spending_value.text = (0.toFloat()).format(2)
             total_spent = 0.toFloat()
             sharedpreferences.edit().putFloat(TOTAL, 0.toFloat()).apply()
-            //data.clear()
             getFileStreamPath(FILE_NAME).delete()
             overUnderCalculation()
             Toast.makeText(this,
@@ -163,7 +148,6 @@ class MainActivity : AppCompatActivity(), UpdateBudgetFragment.UpdateBudgetListe
 
     override fun applySpending(category: String?, price: String?) {
         if (category != null && price != null) {
-            //data[category] = price.toFloat()
             val spent = price.toFloat()
             total_spent += spent
             total_spending_value.text = total_spent.format(2)
@@ -191,85 +175,6 @@ class MainActivity : AppCompatActivity(), UpdateBudgetFragment.UpdateBudgetListe
                 }
             }
             overUnderCalculation()
-        }
-    }
-
-    //TODO: Don't need this method if the one in DetailsActivity works. Should also delete the delete fragment.
-    override fun applyDeleting(category: String?, price: String?) {
-        if (category != null && price != null) {
-            var flag = 0
-            val refinedPrice = price.toFloat().format(2)
-            val fis = openFileInput(FILE_NAME)
-            var lines = BufferedReader(InputStreamReader(fis)).readLines()
-            var currLine : String
-            var count = 0;
-            for(line in lines) {
-                val n = lines.size
-                val x = line.split(Regex(", "), 3)
-                if (x[0] == category && x[1] == "-".plus(refinedPrice)) { //found line to delete
-                    flag = 1
-                    val spent = price.toFloat()
-                    total_spent -= spent
-                    total_spending_value.text = total_spent.format(2)
-                    sharedpreferences.edit().putFloat(TOTAL, total_spent).apply()
-                    overUnderCalculation()
-                    lines = lines.take(count) + lines.drop(count+n)
-                    val text = lines.joinToString(System.lineSeparator())
-                    fis.close()
-                    write(FILE_NAME, text)
-
-                    break
-                    //don't add this line to new file
-//                    currLine = ""
-//                    val newText = currLine+"\n"
-//                    if(!getFileStreamPath(TEMP_FILE_NAME).exists()){
-//                        try{
-//                            write(TEMP_FILE_NAME, newText)
-//                        }catch (e: FileNotFoundException){
-//                            Log.i("MainActivity", "FileNotFoundException")
-//                        }
-//                    }else{
-//                        try {
-//                            getFileStreamPath(TEMP_FILE_NAME).appendText(newText)
-//                        } catch (e: IOException) {
-//                            Log.i("ApplyDeleting", "Append fail")
-//                        }
-//                    }
-                }
-                count++
-                //add every other line to new file
-//                currLine = line
-//                val newText = currLine+"\n"
-//                if(!getFileStreamPath(TEMP_FILE_NAME).exists()){
-//                    try{
-//                        write(TEMP_FILE_NAME, newText)
-//                    }catch (e: FileNotFoundException){
-//                        Log.i("MainActivity", "FileNotFoundException")
-//                    }
-//                }else{
-//                    try {
-//                        getFileStreamPath(TEMP_FILE_NAME).appendText(newText)
-//                    } catch (e: IOException) {
-//                        Log.i("ApplyDeleting", "Append fail")
-//                    }
-//                }
-
-            }
-            //overwrite contents of new file into old file and delete new file
-//            getFileStreamPath(TEMP_FILE_NAME).copyTo(getFileStreamPath(FILE_NAME), true)
-//            getFileStreamPath(TEMP_FILE_NAME).delete()
-
-
-            if (flag == 0) {
-                Toast.makeText(this,
-                    "Expense Not Found!",
-                    Toast.LENGTH_LONG).show()
-            }
-            else if (flag == 1) {
-                Toast.makeText(this,
-                    "Expense Deleted!",
-                    Toast.LENGTH_LONG).show()
-            }
         }
     }
 
@@ -321,13 +226,15 @@ class MainActivity : AppCompatActivity(), UpdateBudgetFragment.UpdateBudgetListe
     companion object{
         private const val myPreference = "mypref"
         private const val BUDGET = "budget"
-        private const val OVER_UNDER = "over"
+        const val OVER_UNDER = "over"
         const val TOTAL = "total_spent"
         const val FILE_NAME = "SpendingList.txt"
-        private const val TEMP_FILE_NAME = "temp.txt"
         private const val LOGIN = "userLoginPreference"
         private val TAG = "Expense-Tracker"
         var total_spent: Float = 0.toFloat()
+        var budget: Float = 0.toFloat()
+        var over_under: Float = 0.toFloat()
+        lateinit var over_under_text: TextView
         lateinit var total_spending_value: TextView
         lateinit var sharedpreferences: SharedPreferences
     }
